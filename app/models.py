@@ -1,3 +1,5 @@
+from datetime import date
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
@@ -76,3 +78,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_data_nascimento(self):
         return self.data_nascimento
 
+    def get_idade(self):
+        data_nascimento = self.data_nascimento
+        idade = relativedelta(date.today(), data_nascimento).years
+        return idade
+
+    def get_primeiro_nome(self):
+        return self.nome_completo.split()[0]

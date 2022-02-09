@@ -11,9 +11,9 @@
             <li><a href= "{% url 'agendamento' %}">Realizar Agendamento </a></li>
         </ul>
     </div>
-<h1> Bem vindo, {{user.nome_completo}} </h1>
-<p>Nome do cidadão: {{user.nome_completo}}</p>
-<p>Data de Nascimento: {{user.data_nascimento}}, Idade: {{forms.get_idade}}</p>
+<h1> Bem vindo, {{user.get_primeiro_nome}} </h1>
+<p>Nome Completo: {{user.nome_completo}}</p>
+<p>Data de Nascimento: {{user.get_data_nascimento}}, Idade: {{user.get_idade}}</p>
 <p> CPF: {{user.cpf}}</p>
 
 </body>
