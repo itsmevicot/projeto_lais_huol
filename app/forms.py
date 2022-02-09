@@ -57,13 +57,6 @@ class cadastroForm(forms.Form):
             raise forms.ValidationError("O CPF inserido já é cadastrado.")
         return cpf
 
-    def get_idade(self):
-        data_nascimento = self.cleaned_data.get('data_nascimento')
-        idade = relativedelta(date.today(), data_nascimento).years
-        return idade
-
-
-
 class loginForm(forms.Form):
     cpf = BRCPFField(label='CPF', max_length=11, widget=forms.TextInput(attrs={'data-mask': "00000000000"}))
     senha = forms.CharField(label='Senha', max_length=16, min_length=8, widget=forms.PasswordInput())
