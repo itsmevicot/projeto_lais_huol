@@ -39,19 +39,19 @@ def login(request):
                 return redirect(home)
     return render(request, 'usuarios/login.html',locals())
 
-@login_required
+@login_required(login_url='/usuario/login/')
 def logout_user(request):
     logout(request)
     return redirect('index')
 
-@login_required
+@login_required(login_url='/usuario/login')
 def home(request):
     return render(request, 'usuarios/home.html')
 
-@login_required
+@login_required(login_url='/usuario/login')
 def agendamento(request):
     return render(request, 'autenticado/agendamento.html')
 
-@login_required
+@login_required(login_url='/usuario/login')
 def listagem_agendamentos(request):
     return render(request, 'autenticado/listagem.html')
