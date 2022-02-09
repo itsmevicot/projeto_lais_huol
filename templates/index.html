@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% if messages %}
+   {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+{% endif %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial</title>
+</head>
+
+<body>
+    <!-- Navegação da página -->
+    <div class="classnav">
+        <ul>
+            <li><a href= "{% url 'login' %}">Entrar </a></li>
+            <li><a href= "{% url 'cadastro' %}">Cadastre-se </a></li>
+        </ul>
+    </div>
+</body>
+</html>

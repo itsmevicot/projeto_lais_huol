@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<div class="classnav">
+        <ul>
+            <li><a href= "{% url 'logout' %}">Encerrar Sessão </a></li>
+            <li><a href= "{% url 'agendamento' %}">Realizar Agendamento </a></li>
+        </ul>
+    </div>
+<h1> Bem vindo, {{user.nome_completo}} </h1>
+<p>Nome do cidadão: {{user.nome_completo}}</p>
+<p>Data de Nascimento: {{user.data_nascimento}}, Idade: {{forms.get_idade}}</p>
+<p> CPF: {{user.cpf}}</p>
+
+</body>
+</html>
