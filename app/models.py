@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.timezone import localtime
 from localflavor.br.models import BRCPFField
@@ -9,7 +9,7 @@ from localflavor.br.models import BRCPFField
 
 class CustomUserManager(BaseUserManager):
 
-    def create_user(self, cpf, nome_completo, data_nascimento, password = None): #precisa passar o isActive ???
+    def create_user(self, cpf, nome_completo, data_nascimento, password = None):
 
         if not cpf:
             raise ValueError(('O campo CPF é obrigatório.'))
@@ -100,9 +100,11 @@ class Agendamento(models.Model):
     estabelecimento = models.ForeignKey(Estabelecimento, on_delete=models.CASCADE, verbose_name="Estabelecimento")
     data_agendamento = models.DateField('Data do Agendamento')
 
+    def __str__(self):
+        return f"Dia {self.data_agendamento}, Estabelecimento: {self.estabelecimento}"
 
 class Agendamento_Cidadao(models.Model):
-    agendamento = models.ForeignKey(Agendamento, on_delete=models.CASCADE, verbose_name="ID do Agendamento")
+    agendamento = models.ForeignKey(Agendamento, on_delete=models.CASCADE, verbose_name="Agendamento")
     cidadao = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="CPF")
     is_active = models.BooleanField(default=False, verbose_name='Agendamento Ativo')
     hora_agendamento = models.TimeField('Hora do Agendamento')

@@ -48,8 +48,8 @@ def logout_user(request):
 @login_required(login_url='/')
 def buscar_agendamentos(request):
 
-    # if Agendamento_Cidadao.objects.filter(cidadao= request.user, is_active= True).exists():
-    #     return redirect('listagem')
+    if Agendamento_Cidadao.objects.filter(cidadao= request.user, is_active= True).exists():
+        return redirect('listagem')
 
     form = agendamentoForm(request.POST or None)
     if request.method == 'POST':
