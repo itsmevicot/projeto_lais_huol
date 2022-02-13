@@ -5,16 +5,13 @@
     <title>Home</title>
 </head>
 <body>
-<div class="classnav">
-        <ul>
+    <h1> Bem vindo, {{user.get_primeiro_nome}} </h1>
+    <p><b>Nome Completo:</b> {{user.nome_completo}}</p>
+    <p><b>Data de Nascimento:</b> {{user.get_data_nascimento}}, <b>Idade:</b> {{user.get_idade}} anos</p>
+    <p> <b>CPF:</b> {{user.cpf}}</p>
+        <div class="classnav">
+            <li><a href= "{% url 'buscar_agendamentos' %}">Realizar Agendamento </a></li>
             <li><a href= "{% url 'logout' %}">Encerrar Sessão </a></li>
-            <li><a href= "{% url 'agendamento' %}">Realizar Agendamento </a></li>
-        </ul>
-    </div>
-<h1> Bem vindo, {{user.get_primeiro_nome}} </h1>
-<p>Nome Completo: {{user.nome_completo}}</p>
-<p>Data de Nascimento: {{user.get_data_nascimento}}, Idade: {{user.get_idade}}</p>
-<p> CPF: {{user.cpf}}</p>
-
+        </div>
 </body>
 </html>
