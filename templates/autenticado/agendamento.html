@@ -1,15 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <title>Agendamento</title>
 </head>
 <body>
-<div class="classnav">
+    <div class="classnav">
         <ul>
             <li><a href= "{% url 'listagem' %}">Listagem de Agendamentos</a></li>
         </ul>
     </div>
-<h1> Vamo implementar ainda familia</h1>
+    <section class = "container mt-2">
+    <h1>AGENDAMENTO</h1>
+
+        <form action = "{%url 'buscar_agendamentos' %}" method="POST">
+            {% csrf_token %}
+            {% crispy form %}
+            {{form.errors}}
+        </form>
+
+        {% if todos_horarios_disponiveis %}
+        {% for horario, horario_display in todos_horarios_disponiveis %}
+        <a href="/realizar_agendamento/{{agendamento.pk}}/?horario={{horario}}"> {{horario_display}}</a>
+
+        {% endfor %}
+        {% endif %}
+    </section>
+
 </body>
 </html>
+
