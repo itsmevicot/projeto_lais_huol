@@ -4,13 +4,14 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
-from app.models import CustomUser, CustomUserManager
+from app.models import CustomUser, CustomUserManager, Estabelecimento, Agendamento, Agendamento_Cidadao
+
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='Senha', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirmação de Senha', widget=forms.PasswordInput)
 
     class Meta:
         model = CustomUser
@@ -64,17 +65,33 @@ class UserAdmin(BaseUserAdmin):
 
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
-    '''
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'date_of_birth', 'password1', 'password2'),
+            'fields': ('nome_completo','cpf','data_nascimento','password1','password2',)
         }),
     )
-    '''
+
     search_fields = ('cpf',)
     ordering = ('cpf',)
     filter_horizontal = ()
 
+@admin.register(Estabelecimento)
+class EstabelecimentoAdmin(admin.ModelAdmin):
+    list_filter= ('nome_estabelecimento', 'codigo_cnes',)
+    list_display= ('nome_estabelecimento', 'codigo_cnes',)
+    search_fields= ('nome_estabelecimento', 'codigo_cnes',)
+    ordering= ('nome_estabelecimento', 'codigo_cnes',)
+
+
+@admin.register(Agendamento_Cidadao)
+class Agendamento_CidadaoAdmin(admin.ModelAdmin):
+    list_filter= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
+    list_display= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
+    search_fields= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
+    ordering= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
+
 
 admin.site.register(CustomUser, UserAdmin)
+
