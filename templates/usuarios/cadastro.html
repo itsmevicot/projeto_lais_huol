@@ -12,6 +12,7 @@
 <body>
     <section class = "container mt-2">
     <h1>Cadastro</h1>
+        <p>Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>
         <form action = "{%url 'cadastro' %}" method="POST">
             {% csrf_token %}
             {% crispy form %}
