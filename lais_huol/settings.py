@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'localflavor',
     'app',
     'crispy_forms',
+    'bootstrap4',
+    'bootstrap_datepicker_plus',
 ]
 
 #Crispy Forms
