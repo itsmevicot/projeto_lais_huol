@@ -1,8 +1,9 @@
-from datetime import date
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
+from django.utils.timezone import localtime
 from localflavor.br.models import BRCPFField
 
 
@@ -85,3 +86,54 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_primeiro_nome(self):
         return self.nome_completo.split()[0]
+
+
+class Estabelecimento(models.Model):
+    nome_estabelecimento = models.CharField('Nome do Estabelecimento', max_length=70)
+    codigo_cnes = models.CharField('Código CNES', max_length=30)
+
+    def __str__(self):
+        return f"{self.nome_estabelecimento}, CNES: {self.codigo_cnes}"
+
+
+class Agendamento(models.Model):
+    estabelecimento = models.ForeignKey(Estabelecimento, on_delete=models.CASCADE, verbose_name="Estabelecimento")
+    data_agendamento = models.DateField('Data do Agendamento')
+
+
+class Agendamento_Cidadao(models.Model):
+    agendamento = models.ForeignKey(Agendamento, on_delete=models.CASCADE, verbose_name="ID do Agendamento")
+    cidadao = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="CPF")
+    is_active = models.BooleanField(default=False, verbose_name='Agendamento Ativo')
+    hora_agendamento = models.TimeField('Hora do Agendamento')
+
+
+    @property
+    def status_agendamento(self):
+        if date.today() > self.agendamento.data_agendamento:
+            return 'Expirado'
+        elif date.today() == self.agendamento.data_agendamento:
+            if localtime().time() < self.hora_agendamento:
+                return 'Expirado'
+        else:
+            return 'Ativo'
+
+        return 'Ativo'
+
+    @property
+    def datahora_consulta(self):
+        return f"Sistema acessado às {localtime().time().strftime('%H:%M:%S')} no dia {date.today().strftime('%d/%m/%Y')}"
+
+    @property
+    def dia_semana(self):
+
+        dias_semana = {0: 'Segunda-Feira',
+                       1: 'Terça-Feira',
+                       2: 'Quarta-Feira',
+                       3: 'Quinta-Feira',
+                       4: 'Sexta-Feira',
+                       5: 'Sábado',
+                       6: 'Domingo'}
+
+        dia_agendamento = dias_semana[self.agendamento.data_agendamento.weekday()]
+        return dia_agendamento
