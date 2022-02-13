@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 {% load crispy_forms_tags %}
+{% if messages %}
+   {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+{% endif %}
 
 
 <html lang="pt">
@@ -13,6 +18,7 @@
 <body>
     <section class = "container mt-2">
     <h1>Login</h1>
+    <p>Ainda não tem uma conta? <a href="{% url 'cadastro' %}">Cadastre-se</a></p>
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             {% crispy form %}
