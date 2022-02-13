@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <title>Listagem de Agendamentos</title>
 </head>
+<h1>Meus Agendamentos</h1>
 <body>
 
-<h1> listagem de agendamentos</h1>
+{% for agendamento in agendamentos%}
+-----------------------------------------------------------------
+<h2>ID do Agendamento: {{agendamento.id}}</h2>
+
+<p><b>Local:</b> {{agendamento.agendamento.estabelecimento}} </p>
+<p><b>Data:</b> {{agendamento.agendamento.data_agendamento}} </p>
+<p><b>Hora:</b> {{agendamento.hora_agendamento}}</p>
+<p><b>Dia:</b> {{agendamento.dia_semana}} </p>
+<p><b>Status do Agendamento:</b> {{agendamento.status_agendamento}}</p>
+<p> <b> {{agendamento.datahora_consulta}}</b> </p>
+
+{%endfor%}
 </body>
 </html>
