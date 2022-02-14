@@ -148,7 +148,6 @@ def grafico_pizza(request):
 @user_passes_test(lambda u: u.is_superuser, login_url='/')
 def grafico_barra(request):
     queryset = Agendamento_Cidadao.objects.order_by('-agendamento__estabelecimento_id')
-    print("queryset:", queryset)
     id_estabelecimento = queryset[0].agendamento.estabelecimento.pk
     nome_estabelecimentos = [queryset[0].agendamento.estabelecimento.nome_estabelecimento]
     qtdade_agendamentos = []
