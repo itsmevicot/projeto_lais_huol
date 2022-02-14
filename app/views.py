@@ -1,5 +1,5 @@
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from app.forms import cadastroForm, loginForm, agendamentoForm
 from app.models import CustomUser, Agendamento_Cidadao, Agendamento
@@ -26,7 +26,7 @@ def login(request):
     if request.method == 'POST':
         form = loginForm(request.POST)
         if form.is_valid():
-            print("logou não sei pq")
+            print("formulario valido")
             user = auth.authenticate(username = form.cleaned_data.get('cpf'), password= form.cleaned_data.get('senha'))
             if user is not None:
                 auth.login(request,user)
@@ -57,8 +57,6 @@ def buscar_agendamentos(request):
             dados_estabelecimento = form.cleaned_data.get('estabelecimento_saude')
             data_agendamento = form.cleaned_data.get('data_agendamento')
 
-
-
             horarios_possiveis = (
                 ("8:0", "08h:00m"),
                 ("8:10", "08h:10m"),
@@ -86,10 +84,12 @@ def buscar_agendamentos(request):
                 ("11:50", "11h:50m"),
             )
 
-            # dia_agendamento = dias_semana[form.cleaned_data.get('data_agendamento').weekday()]
             agendamento = Agendamento.objects.filter(data_agendamento= data_agendamento, estabelecimento=dados_estabelecimento).first()
-            # if agendamento == null / none
-            #     fazer algo
+
+            if agendamento == None:
+                messages.success(request, "Não há horários disponíveis para o dia escolhido. Por favor, escolha outra data.")
+                return render(request, 'autenticado/agendamento.html', locals())
+
             agendamentos_cidadao = Agendamento_Cidadao.objects.filter(agendamento_id = agendamento.pk)
 
             horarios_ocupados = []
@@ -101,7 +101,6 @@ def buscar_agendamentos(request):
             print("Horarios ocupados: ", horarios_ocupados)
             todos_horarios_disponiveis = [x for x in horarios_possiveis if x[0] not in horarios_ocupados]
             print("Horários disponíveis: ", todos_horarios_disponiveis)
-
 
         return render(request, 'autenticado/agendamento.html', locals())
 
@@ -116,14 +115,55 @@ def realizar_agendamento(request, id_agendamento):
     print(horario)
     novo_agendamento = Agendamento_Cidadao.objects.create(agendamento = agendamento, cidadao= request.user, is_active= True, hora_agendamento= horario)
 
-
+    messages.success(request, "Agendamento feito com sucesso!")
     return redirect('listagem')
 
 
 @login_required(login_url='/')
 def listagem_agendamentos(request):
     agendamentos = Agendamento_Cidadao.objects.filter(cidadao= request.user)
-    for agendamento in agendamentos:
-        print("infos: ", agendamento)
     return render(request, 'autenticado/listagem.html', locals())
 
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def grafico_pizza(request):
+    queryset = Agendamento.objects.order_by('-estabelecimento_id')
+    id_estabelecimento = queryset[0].estabelecimento.pk
+    nome_estabelecimentos = [queryset[0].estabelecimento.nome_estabelecimento]
+    qtdade_agendamentos = []
+    count = 0
+
+    for agendamento in queryset:
+        if id_estabelecimento == agendamento.estabelecimento.pk:
+            count += 1
+
+        else:
+            id_estabelecimento = agendamento.estabelecimento.pk
+            qtdade_agendamentos.append(count)
+            count = 0
+            nome_estabelecimentos.append(agendamento.estabelecimento.nome_estabelecimento)
+
+    return render(request, 'graficos/grafico_pizza.html', locals())
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def grafico_barra(request):
+    queryset = Agendamento_Cidadao.objects.order_by('-agendamento__estabelecimento_id')
+    print("queryset:", queryset)
+    id_estabelecimento = queryset[0].agendamento.estabelecimento.pk
+    nome_estabelecimentos = [queryset[0].agendamento.estabelecimento.nome_estabelecimento]
+    qtdade_agendamentos = []
+    count = 0
+
+    for agendamento in queryset:
+        if id_estabelecimento == agendamento.agendamento.estabelecimento.pk:
+            count += 1
+
+        else:
+            qtdade_agendamentos.append(count)
+            id_estabelecimento = agendamento.agendamento.estabelecimento.pk
+            count = 1
+            nome_estabelecimentos.append(agendamento.agendamento.estabelecimento.nome_estabelecimento)
+
+    qtdade_agendamentos.append(count)
+
+    return render(request, 'graficos/grafico_barra.html', locals())

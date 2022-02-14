@@ -2,18 +2,18 @@
 {% load crispy_forms_tags %}
 {% load bootstrap4 %}
 {% bootstrap_css %}
-
+{% bootstrap_javascript jquery='full' %}
+{% if messages %}
+   {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+{% endif %}
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <title>Agendamento</title>
 </head>
 <body>
-    <div class="classnav">
-        <ul>
-            <li><a href= "{% url 'listagem' %}">Listagem de Agendamentos</a></li>
-        </ul>
-    </div>
     <section class = "container mt-2">
     <h1>AGENDAMENTO</h1>
 

@@ -62,10 +62,10 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Estabelecimento)
 class EstabelecimentoAdmin(admin.ModelAdmin):
-    list_filter= ('nome_estabelecimento', 'codigo_cnes',)
-    list_display= ('nome_estabelecimento', 'codigo_cnes',)
-    search_fields= ('nome_estabelecimento', 'codigo_cnes',)
-    ordering= ('nome_estabelecimento', 'codigo_cnes',)
+    list_filter= ('nome_estabelecimento', 'codigo_cnes', 'id',)
+    list_display= ('nome_estabelecimento', 'codigo_cnes', 'id',)
+    search_fields= ('nome_estabelecimento', 'codigo_cnes', 'id',)
+    ordering= ('nome_estabelecimento', 'codigo_cnes', 'id',)
 
 @admin.register(Agendamento)
 class AgendamentoAdmin(admin.ModelAdmin):
@@ -81,7 +81,6 @@ class Agendamento_CidadaoAdmin(admin.ModelAdmin):
     list_display= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
     search_fields= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
     ordering= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
-
 
 admin.site.register(CustomUser, UserAdmin)
 

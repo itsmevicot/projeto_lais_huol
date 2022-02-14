@@ -6,7 +6,6 @@ from django.db import models
 from django.utils.timezone import localtime
 from localflavor.br.models import BRCPFField
 
-
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, cpf, nome_completo, data_nascimento, password = None):
@@ -109,6 +108,8 @@ class Agendamento_Cidadao(models.Model):
     is_active = models.BooleanField(default=False, verbose_name='Agendamento Ativo')
     hora_agendamento = models.TimeField('Hora do Agendamento')
 
+    def __str__(self):
+        return f"Agendamento {self.agendamento}, Cidadão:{self.cidadao}, Ativo:{self.is_active}, Hora:{self.hora_agendamento} "
 
     @property
     def status_agendamento(self):

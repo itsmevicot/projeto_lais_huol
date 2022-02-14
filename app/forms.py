@@ -6,6 +6,7 @@ from localflavor.br.forms import BRCPFField
 from app.models import CustomUser, Estabelecimento
 from dateutil.relativedelta import relativedelta
 from bootstrap_datepicker_plus.widgets import DatePickerInput
+from django.contrib.auth.hashers import check_password
 
 
 class cadastroForm(forms.Form):
@@ -34,6 +35,7 @@ class cadastroForm(forms.Form):
         if any(char.isdigit() for char in nome_completo):
             raise forms.ValidationError('O nome não pode conter dígitos.')
         return nome_completo
+
 
     def clean_confirmar_senha(self):
         senha = self.cleaned_data.get('senha')
@@ -78,11 +80,17 @@ class loginForm(forms.Form):
             raise forms.ValidationError("Esse CPF não está cadastrado.")
         return cpf
 
-    def clean_senha(self):
+    def clean(self):
         senha = self.cleaned_data.get('senha')
+        cpf = self.cleaned_data.get('cpf')
+        filtro = CustomUser.objects.filter(cpf = cpf).first()
+        if filtro is None:
+            raise forms.ValidationError("O CPF não está cadastrado!")
+        senha_banco = filtro.password
+        if check_password(senha,senha_banco) == False:
+            raise forms.ValidationError("A senha está incorreta!")
         if senha == "":
             raise forms.ValidationError("O campo Senha deve ser preenchido.")
-        return senha
 
 class agendamentoForm(forms.Form):
     estabelecimento_saude = forms.ModelChoiceField(queryset=Estabelecimento.objects.all(), label="Estabelecimento de Saúde")
@@ -114,7 +122,6 @@ class agendamentoForm(forms.Form):
         ("11:40", "11h:40m ~ 11h:50m"),
         ("11:50", "11h:50m ~ 12h:00m"),
     )
-    #hora_agendamento = forms.ChoiceField(label='Hora do Exame', choices=horarios_possiveis, widget=forms.Select)
 
 
     def __init__(self, *args, **kwargs):

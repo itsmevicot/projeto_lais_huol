@@ -9,5 +9,7 @@ urlpatterns = [
     path('buscar_agendamentos', views.buscar_agendamentos, name ='buscar_agendamentos'),
     path('listagem', views.listagem_agendamentos, name ='listagem'),
     path('realizar_agendamento/<int:id_agendamento>/', views.realizar_agendamento, name='realizar_agendamento'),
+    path('graficos/pizza', views.grafico_pizza, name ='grafico_pizza'),
+    path('graficos/barra', views.grafico_barra, name='grafico_barra'),
 
 ]

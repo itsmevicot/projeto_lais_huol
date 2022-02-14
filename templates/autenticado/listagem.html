@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+{% if messages %}
+   {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+{% endif %}
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
