@@ -103,7 +103,7 @@ class Agendamento(models.Model):
     def __str__(self):
         return f"Dia {self.data_agendamento}, Estabelecimento: {self.estabelecimento}"
 
-class Agendamento_Cidadao(models.Model):
+class AgendamentoCidadao(models.Model):
     agendamento = models.ForeignKey(Agendamento, on_delete=models.CASCADE, verbose_name="Agendamento")
     cidadao = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="CPF")
     is_active = models.BooleanField(default=False, verbose_name='Agendamento Ativo')

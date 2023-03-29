@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
-from app.models import CustomUser, Estabelecimento, Agendamento_Cidadao, Agendamento
+from app.models import CustomUser, Estabelecimento, AgendamentoCidadao, Agendamento
 
 
 class UserCreationForm(forms.ModelForm):
@@ -75,8 +75,8 @@ class AgendamentoAdmin(admin.ModelAdmin):
     ordering= ('estabelecimento', 'data_agendamento',)
 
 
-@admin.register(Agendamento_Cidadao)
-class Agendamento_CidadaoAdmin(admin.ModelAdmin):
+@admin.register(AgendamentoCidadao)
+class AgendamentoCidadaoAdmin(admin.ModelAdmin):
     list_filter= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
     list_display= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
     search_fields= ('agendamento', 'cidadao','hora_agendamento', 'is_active',)
