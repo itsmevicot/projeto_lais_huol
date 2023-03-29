@@ -26,8 +26,7 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            print("formulario valido")
-            user = auth.authenticate(username = form.cleaned_data.get('cpf'), password= form.cleaned_data.get('senha'))
+            user = auth.authenticate(username=form.cleaned_data.get('cpf'), password=form.cleaned_data.get('senha'))
             if user is not None:
                 auth.login(request,user)
                 return redirect(home)
@@ -90,7 +89,7 @@ def buscar_agendamentos(request):
                 messages.success(request, "Não há horários disponíveis para o dia escolhido. Por favor, escolha outra data.")
                 return render(request, 'autenticado/agendamento.html', locals())
 
-            agendamentos_cidadao = AgendamentoCidadao.objects.filter(agendamento_id = agendamento.pk)
+            agendamentos_cidadao = AgendamentoCidadao.objects.filter(agendamento_id=agendamento.pk)
 
             horarios_ocupados = []
             for agendamento_cidadao in agendamentos_cidadao:
@@ -98,9 +97,7 @@ def buscar_agendamentos(request):
                 minuto = agendamento_cidadao.hora_agendamento.minute
                 horarios_ocupados.append(f"{hora}:{minuto}")
 
-            print("Horarios ocupados: ", horarios_ocupados)
             todos_horarios_disponiveis = [x for x in horarios_possiveis if x[0] not in horarios_ocupados]
-            print("Horários disponíveis: ", todos_horarios_disponiveis)
 
         return render(request, 'autenticado/agendamento.html', locals())
 
@@ -110,10 +107,9 @@ def buscar_agendamentos(request):
 @login_required(login_url='/')
 def realizar_agendamento(request, id_agendamento):
     horario = request.GET.get('horario')
-    agendamento = Agendamento.objects.get(id = id_agendamento)
+    agendamento = Agendamento.objects.get(id=id_agendamento)
     horario = datetime.strptime(horario, "%H:%M").time()
-    print(horario)
-    novo_agendamento = AgendamentoCidadao.objects.create(agendamento = agendamento, cidadao= request.user, is_active= True, hora_agendamento= horario)
+    novo_agendamento = AgendamentoCidadao.objects.create(agendamento=agendamento, cidadao=request.user, is_active=True, hora_agendamento=horario)
 
     messages.success(request, "Agendamento feito com sucesso!")
     return redirect('listagem')
@@ -121,7 +117,7 @@ def realizar_agendamento(request, id_agendamento):
 
 @login_required(login_url='/')
 def listagem_agendamentos(request):
-    agendamentos = AgendamentoCidadao.objects.filter(cidadao= request.user)
+    agendamentos = AgendamentoCidadao.objects.filter(cidadao=request.user)
     return render(request, 'autenticado/listagem.html', locals())
 
 
