@@ -5,6 +5,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.timezone import localtime
 from localflavor.br.models import BRCPFField
+from datetime import datetime
 
 class CustomUserManager(BaseUserManager):
 
@@ -113,15 +114,12 @@ class Agendamento_Cidadao(models.Model):
 
     @property
     def status_agendamento(self):
-        if date.today() > self.agendamento.data_agendamento:
+        now = datetime.now()
+        agendamento_datetime = datetime.combine(self.agendamento.data_agendamento, self.hora_agendamento)
+        if now > agendamento_datetime:
             return 'Expirado'
-        elif date.today() == self.agendamento.data_agendamento:
-            if localtime().time() < self.hora_agendamento:
-                return 'Expirado'
         else:
             return 'Ativo'
-
-        return 'Ativo'
 
     @property
     def datahora_consulta(self):
