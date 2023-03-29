@@ -9,7 +9,7 @@ from bootstrap_datepicker_plus.widgets import DatePickerInput
 from django.contrib.auth.hashers import check_password
 
 
-class cadastroForm(forms.Form):
+class CadastroForm(forms.Form):
     nome_completo = forms.CharField(label= 'Nome Completo', max_length=100)
     cpf = BRCPFField(label= 'CPF', max_length=11,widget= forms.TextInput(attrs={'data-mask':"00000000000"}))
     data_nascimento = forms.DateField(label= 'Data de Nascimento',widget= forms.TextInput(attrs={'data-mask':"00/00/0000"}))
@@ -58,7 +58,7 @@ class cadastroForm(forms.Form):
             raise forms.ValidationError("O CPF inserido já é cadastrado.")
         return cpf
 
-class loginForm(forms.Form):
+class LoginForm(forms.Form):
     cpf = BRCPFField(label='CPF', max_length=11, widget=forms.TextInput(attrs={'data-mask': "00000000000"}))
     senha = forms.CharField(label='Senha', max_length=16, min_length=8, widget=forms.PasswordInput())
 
@@ -92,7 +92,7 @@ class loginForm(forms.Form):
         if senha == "":
             raise forms.ValidationError("O campo Senha deve ser preenchido.")
 
-class agendamentoForm(forms.Form):
+class AgendamentoForm(forms.Form):
     estabelecimento_saude = forms.ModelChoiceField(queryset=Estabelecimento.objects.all(), label="Estabelecimento de Saúde")
     data_agendamento = forms.DateField(label='Data do Exame', widget=DatePickerInput(format='%d/%m/%Y', options={"locale":"pt_br"}))
 

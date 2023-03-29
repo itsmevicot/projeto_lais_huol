@@ -1,30 +1,30 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
-from app.forms import cadastroForm, loginForm, agendamentoForm
-from app.models import CustomUser, Agendamento_Cidadao, Agendamento
+from app.forms import CadastroForm, LoginForm, AgendamentoForm
+from app.models import CustomUser, Agendamento, AgendamentoCidadao
 from django.contrib import auth, messages
 from datetime import datetime
 
 
 def cadastro(request):
-    form = cadastroForm(request.POST or None)
+    form = CadastroForm(request.POST or None)
 
     if request.method == 'POST':
-        form = cadastroForm(request.POST)
+        form = CadastroForm(request.POST)
         if form.is_valid():
-            novo_usuario = CustomUser.objects.create_user(cpf = form.cleaned_data.get('cpf'), nome_completo= form.cleaned_data.get('nome_completo'),
-                                                          data_nascimento= form.cleaned_data.get('data_nascimento'), password= form.cleaned_data.get('senha'))
+            novo_usuario = CustomUser.objects.create_user(cpf=form.cleaned_data.get('cpf'), nome_completo=form.cleaned_data.get('nome_completo'),
+                                                          data_nascimento=form.cleaned_data.get('data_nascimento'), password=form.cleaned_data.get('senha'))
             messages.success(request, "Cadastro realizado com sucesso!")
             return redirect('login')
 
     return render(request,'usuarios/cadastro.html', locals())
 
 def login(request):
-    form = loginForm(request.POST or None)
+    form = LoginForm(request.POST or None)
 
     if request.method == 'POST':
-        form = loginForm(request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             print("formulario valido")
             user = auth.authenticate(username = form.cleaned_data.get('cpf'), password= form.cleaned_data.get('senha'))
@@ -48,10 +48,10 @@ def logout_user(request):
 @login_required(login_url='/')
 def buscar_agendamentos(request):
 
-    if Agendamento_Cidadao.objects.filter(cidadao= request.user, is_active= True).exists():
+    if AgendamentoCidadao.objects.filter(cidadao=request.user, is_active=True).exists():
         return redirect('listagem')
 
-    form = agendamentoForm(request.POST or None)
+    form = AgendamentoForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             dados_estabelecimento = form.cleaned_data.get('estabelecimento_saude')
@@ -84,13 +84,13 @@ def buscar_agendamentos(request):
                 ("11:50", "11h:50m"),
             )
 
-            agendamento = Agendamento.objects.filter(data_agendamento= data_agendamento, estabelecimento=dados_estabelecimento).first()
+            agendamento = Agendamento.objects.filter(data_agendamento=data_agendamento, estabelecimento=dados_estabelecimento).first()
 
             if agendamento == None:
                 messages.success(request, "Não há horários disponíveis para o dia escolhido. Por favor, escolha outra data.")
                 return render(request, 'autenticado/agendamento.html', locals())
 
-            agendamentos_cidadao = Agendamento_Cidadao.objects.filter(agendamento_id = agendamento.pk)
+            agendamentos_cidadao = AgendamentoCidadao.objects.filter(agendamento_id = agendamento.pk)
 
             horarios_ocupados = []
             for agendamento_cidadao in agendamentos_cidadao:
@@ -113,7 +113,7 @@ def realizar_agendamento(request, id_agendamento):
     agendamento = Agendamento.objects.get(id = id_agendamento)
     horario = datetime.strptime(horario, "%H:%M").time()
     print(horario)
-    novo_agendamento = Agendamento_Cidadao.objects.create(agendamento = agendamento, cidadao= request.user, is_active= True, hora_agendamento= horario)
+    novo_agendamento = AgendamentoCidadao.objects.create(agendamento = agendamento, cidadao= request.user, is_active= True, hora_agendamento= horario)
 
     messages.success(request, "Agendamento feito com sucesso!")
     return redirect('listagem')
@@ -121,7 +121,7 @@ def realizar_agendamento(request, id_agendamento):
 
 @login_required(login_url='/')
 def listagem_agendamentos(request):
-    agendamentos = Agendamento_Cidadao.objects.filter(cidadao= request.user)
+    agendamentos = AgendamentoCidadao.objects.filter(cidadao= request.user)
     return render(request, 'autenticado/listagem.html', locals())
 
 
@@ -147,7 +147,7 @@ def grafico_pizza(request):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/')
 def grafico_barra(request):
-    queryset = Agendamento_Cidadao.objects.order_by('-agendamento__estabelecimento_id')
+    queryset = AgendamentoCidadao.objects.order_by('-agendamento__estabelecimento_id')
     id_estabelecimento = queryset[0].agendamento.estabelecimento.pk
     nome_estabelecimentos = [queryset[0].agendamento.estabelecimento.nome_estabelecimento]
     qtdade_agendamentos = []
